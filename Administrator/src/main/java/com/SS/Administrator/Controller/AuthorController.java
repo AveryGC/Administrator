@@ -58,7 +58,9 @@ public class AuthorController {
 		}
 	}
 	@RequestMapping(path = "/admin/authors/{authorId}", method = RequestMethod.PUT)
-	public ResponseEntity<Author> updateAuthor(@RequestBody Author author){
+	public ResponseEntity<Author> updateAuthor(@RequestBody Author author, @PathVariable int authorId){
+		if(author.getAuthorID()!= authorId)
+			return new ResponseEntity<Author>(HttpStatus.BAD_REQUEST);
 		try {	
 			authorService.updateAuthor(author);
 			return new ResponseEntity<Author>(author,HttpStatus.OK);

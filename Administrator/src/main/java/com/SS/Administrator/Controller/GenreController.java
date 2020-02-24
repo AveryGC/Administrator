@@ -56,7 +56,9 @@ public class GenreController {
 		}
 	}
 	@RequestMapping(path = "/admin/genres/{genreId}", method = RequestMethod.PUT)
-	public ResponseEntity<Genre> updategenre(@RequestBody Genre genre){
+	public ResponseEntity<Genre> updategenre(@RequestBody Genre genre, @PathVariable int genreId){
+		if(genreId != genre.getGenreId())
+			return new ResponseEntity<Genre>(HttpStatus.BAD_REQUEST);
 		try {
 			genreService.updateGenre(genre);
 			return new ResponseEntity<Genre>(genre,HttpStatus.OK);

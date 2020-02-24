@@ -51,7 +51,9 @@ public class PublisherController {
 	}
 	
 	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.PUT)
-	public ResponseEntity<Publisher> updatePublisher(@RequestBody Publisher publisher){
+	public ResponseEntity<Publisher> updatePublisher(@RequestBody Publisher publisher, @PathVariable int publisherId){
+		if(publisherId!=publisher.getPublisherId())
+			return new ResponseEntity<Publisher>(HttpStatus.BAD_REQUEST);
 		try {
 			publisherService.updatePublisher(publisher);
 			return new ResponseEntity<Publisher>(publisher,HttpStatus.OK);

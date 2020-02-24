@@ -56,9 +56,17 @@ public class BookController {
 	}
 	
 	@RequestMapping(path = "/admin/books/{bookId}", method = RequestMethod.PUT)
-	public ResponseEntity<Book> updateBook(@RequestBody Book book){
+	public ResponseEntity<Book> updateBook(@RequestBody Book book, @PathVariable int bookId){
+		if(bookId != book.getBookId())
+			return new ResponseEntity<Book>(HttpStatus.BAD_REQUEST);
+		try {
 			bookService.updateBook(book);
 			return new ResponseEntity<Book>(book,HttpStatus.ACCEPTED);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<Book>(HttpStatus.UNPROCESSABLE_ENTITY);
+		}catch(NoSuchElementException e) {
+			return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
+		}
 	}
 	@RequestMapping(path = "/admin/books/{bookId}", method = RequestMethod.DELETE)
 	public ResponseEntity<Book> deleteBook(@PathVariable int bookId){
