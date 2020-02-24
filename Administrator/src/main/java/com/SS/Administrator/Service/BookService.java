@@ -3,12 +3,14 @@ package com.SS.Administrator.Service;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.SS.Administrator.DAO.AuthorDAO;
 import com.SS.Administrator.DAO.BookDAO;
+import com.SS.Administrator.DAO.GenreDAO;
+import com.SS.Administrator.DAO.PublisherDAO;
 import com.SS.Administrator.Entity.Author;
 import com.SS.Administrator.Entity.Book;
 import com.SS.Administrator.Entity.Genre;
@@ -19,6 +21,12 @@ public class BookService {
 
 	@Autowired
 	private BookDAO bDao;
+	@Autowired
+	private AuthorDAO aDao;
+	@Autowired
+	private GenreDAO gDao;
+	@Autowired
+	private PublisherDAO pDao;
 	
 	public List<Book> readAllBooks(){
 		return bDao.findAll();
@@ -54,11 +62,94 @@ public class BookService {
 	public List<Author> findAuthorsByBook(int bookId) throws NoSuchElementException{
 		return bDao.findById(bookId).get().getAuthors();
 	}
+	public Author deleteAuthorFromBook(int bookId, int authorId)throws NoSuchElementException {
+		Book book = bDao.findById(bookId).get();
+		Author author = aDao.findById(authorId).get();
+		if(book.getAuthors().remove(author)) {
+			bDao.save(book);
+			bDao.flush();
+			return author;
+		}
+		else
+			throw new NoSuchElementException();
+	}
+	public Author addAuthorFromBook(int bookId, int authorId)throws NoSuchElementException {
+		Book book = bDao.findById(bookId).get();
+		Author author = aDao.findById(authorId).get();
+		if(book.getAuthors().contains(author)) {
+			return author;
+		}
+		else {
+			book.getAuthors().add(author);
+			bDao.save(book);
+			bDao.flush();
+			return author;
+		}
+	}
+	public Author postAuthorFromBook(int bookId, int authorId)throws NoSuchElementException {
+		Book book = bDao.findById(bookId).get();
+		Author author = aDao.findById(authorId).get();
+		if(book.getAuthors().contains(author)) {
+			return null;
+		}
+		else {
+			book.getAuthors().add(author);
+			bDao.save(book);
+			bDao.flush();
+			return author;
+		}
+	}
 	public List<Genre> findGenresByBook(int bookId) throws NoSuchElementException{
 		return bDao.findById(bookId).get().getGenres();
 	}
+	public Genre deleteGenreFromBook(int bookId, int genreId)throws NoSuchElementException{
+		Book book = bDao.findById(bookId).get();
+		Genre genre =gDao.findById(genreId).get();
+		if(book.getGenres().remove(genre)) {
+			bDao.save(book);
+			bDao.flush();
+			return genre;
+		}else
+			throw new NoSuchElementException();
+	}
+	public Genre addGenreToBook(int bookId, int genreId)throws NoSuchElementException{
+		Book book = bDao.findById(bookId).get();
+		Genre genre = gDao.findById(genreId).get();
+		if(book.getGenres().contains(genre))
+			return genre;
+		else {
+			book.getGenres().add(genre);
+			bDao.save(book);
+			bDao.flush();
+			return genre;
+		}
+	}
+	public Genre postGenreToBook(int bookId, int genreId)throws NoSuchElementException{
+		Book book = bDao.findById(bookId).get();
+		Genre genre = gDao.findById(genreId).get();
+		if(book.getGenres().contains(genre))
+			return null;
+		else {
+			book.getGenres().add(genre);
+			bDao.save(book);
+			bDao.flush();
+			return genre;
+		}
+	}
 	public Publisher findPublisherofBook(int bookId) throws NoSuchElementException{
 		return bDao.findById(bookId).get().getPublisher();
+	}
+	public Publisher updatePublisherOfBook(int bookId, int publisherId)throws NoSuchElementException{
+		Publisher publisher = pDao.findById(publisherId).get();
+		Book book = bDao.findById(bookId).get();
+		if(book.getPublisher().equals(publisher))
+			return publisher;
+		else {
+			book.setPublisher(publisher);
+			bDao.save(book);
+			bDao.flush();
+			return publisher;
+		}
 	}
 
 }

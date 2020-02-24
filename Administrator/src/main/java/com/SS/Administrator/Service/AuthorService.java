@@ -5,11 +5,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.EntityManagerFactoryAccessor;
 import org.springframework.stereotype.Component;
 
 import com.SS.Administrator.DAO.AuthorDAO;
@@ -22,6 +19,8 @@ import com.SS.Administrator.Entity.Book;
 public class AuthorService {
 	@Autowired
 	private AuthorDAO aDao;
+	@Autowired
+	private BookDAO bDao;
 	
 	public List<Author> readAllAuthors(){
 		return aDao.findAll();
@@ -66,5 +65,42 @@ public class AuthorService {
 		return aDao.findById(authorId).get().getBooks();
 	}
 	
+	public Book deleteAuthorFromBook(int bookId, int authorId)throws NoSuchElementException {
+		Book book = bDao.findById(bookId).get();
+		Author author = aDao.findById(authorId).get();
+		if(book.getAuthors().remove(author)) {
+			bDao.save(book);
+			bDao.flush();
+			return book;
+		}
+		else
+			throw new NoSuchElementException();
+	}
+	public Book addAuthorFromBook(int bookId, int authorId)throws NoSuchElementException {
+		Book book = bDao.findById(bookId).get();
+		Author author = aDao.findById(authorId).get();
+		if(book.getAuthors().contains(author)) {
+			return book;
+		}
+		else {
+			book.getAuthors().add(author);
+			bDao.save(book);
+			bDao.flush();
+			return book;
+		}
+	}
+	public Book postAuthorFromBook(int bookId, int authorId)throws NoSuchElementException {
+		Book book = bDao.findById(bookId).get();
+		Author author = aDao.findById(authorId).get();
+		if(book.getAuthors().contains(author)) {
+			return null;
+		}
+		else {
+			book.getAuthors().add(author);
+			bDao.save(book);
+			bDao.flush();
+			return book;
+		}
+	}
 		
 }

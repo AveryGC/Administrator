@@ -66,5 +66,38 @@ public class Genre implements Serializable {
 	public String toString() {
 		return "Genre [genreID=" + genre_id + ", genreName=" + genreName + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((genreName == null) ? 0 : genreName.hashCode());
+		result = prime * result + ((genre_id == null) ? 0 : genre_id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Genre other = (Genre) obj;
+		if (genreName == null) {
+			if (other.genreName != null)
+				return false;
+		} else if (!genreName.equals(other.genreName))
+			return false;
+		if (genre_id == null) {
+			if (other.genre_id != null)
+				return false;
+		} else if (!genre_id.equals(other.genre_id))
+			return false;
+		return true;
+	}
+	
+	
     
 }

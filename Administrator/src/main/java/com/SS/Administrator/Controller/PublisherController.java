@@ -36,11 +36,6 @@ public class PublisherController {
 		return new ResponseEntity<List<Publisher>>(publishers,HttpStatus.OK);
 	}
 	
-//	@RequestMapping(path="/admin/publishers", method = {RequestMethod.PUT,RequestMethod.DELETE})
-//	public ResponseEntity<String> methodNotAllowed(){
-//		return new ResponseEntity<String>(HttpStatus.METHOD_NOT_ALLOWED);
-//	}
-	
 	@RequestMapping(path= {"/admin/publishers"}, method = RequestMethod.POST)
 	public ResponseEntity<Publisher> addPublisher(@RequestBody Publisher publisher){
 		try {

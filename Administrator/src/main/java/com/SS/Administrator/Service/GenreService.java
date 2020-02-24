@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.SS.Administrator.DAO.BookDAO;
 import com.SS.Administrator.DAO.GenreDAO;
 import com.SS.Administrator.Entity.Book;
 import com.SS.Administrator.Entity.Genre;
@@ -22,6 +23,8 @@ import com.SS.Administrator.Entity.Genre;
 public class GenreService {
 	@Autowired
 	GenreDAO gDao;
+	@Autowired
+	BookDAO bDao;
 	
 	public List<Genre> readAllGenres(){
 		return gDao.findAll();
@@ -62,6 +65,44 @@ public class GenreService {
 	}
 	public List<Book> readBooksInGenre(int genreId)throws NoSuchElementException{
 		return gDao.findById(genreId).get().getBooks();
+	}
+	
+	public List<Genre> findGenresByBook(int bookId) throws NoSuchElementException{
+		return bDao.findById(bookId).get().getGenres();
+	}
+	public Book deleteGenreFromBook(int bookId, int genreId)throws NoSuchElementException{
+		Book book = bDao.findById(bookId).get();
+		Genre genre =gDao.findById(genreId).get();
+		if(book.getGenres().remove(genre)) {
+			bDao.save(book);
+			bDao.flush();
+			return book;
+		}else
+			throw new NoSuchElementException();
+	}
+	public Book addGenreToBook(int bookId, int genreId)throws NoSuchElementException{
+		Book book = bDao.findById(bookId).get();
+		Genre genre = gDao.findById(genreId).get();
+		if(book.getGenres().contains(genre))
+			return book;
+		else {
+			book.getGenres().add(genre);
+			bDao.save(book);
+			bDao.flush();
+			return book;
+		}
+	}
+	public Book postGenreToBook(int bookId, int genreId)throws NoSuchElementException{
+		Book book = bDao.findById(bookId).get();
+		Genre genre = gDao.findById(genreId).get();
+		if(book.getGenres().contains(genre))
+			return null;
+		else {
+			book.getGenres().add(genre);
+			bDao.save(book);
+			bDao.flush();
+			return book;
+		}
 	}
 	
 }

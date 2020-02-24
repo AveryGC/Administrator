@@ -41,7 +41,6 @@ public class AuthorController {
 	public ResponseEntity<Author> getAuthor(@PathVariable int authorId){
 		try {
 			Author author = authorService.findAuthorById(authorId);
-//			if(author!=null)
 			return new ResponseEntity<Author>(author,HttpStatus.OK);
 		}catch(NoSuchElementException e) {
 			return new ResponseEntity<Author>(HttpStatus.NOT_FOUND);
@@ -57,23 +56,11 @@ public class AuthorController {
 		}catch(NullPointerException e) {
 			return new ResponseEntity<Author>(HttpStatus.UNPROCESSABLE_ENTITY);
 		}
-//			catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<Author>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
 	}
 	@RequestMapping(path = "/admin/authors/{authorId}", method = RequestMethod.PUT)
 	public ResponseEntity<Author> updateAuthor(@RequestBody Author author){
-//		try {
 			authorService.updateAuthor(author);
 			return new ResponseEntity<Author>(author,HttpStatus.OK);
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<Author>(HttpStatus.NOT_FOUND);
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<Author>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
 	}
 	
 	@RequestMapping(path = "/admin/authors/{authorId}", method = RequestMethod.DELETE)
@@ -82,13 +69,8 @@ public class AuthorController {
 			Optional<Author> deletedAuthor = authorService.deleteAuthor(authorId);
 			return new ResponseEntity<Optional<Author>>(deletedAuthor,HttpStatus.OK);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			return new ResponseEntity<Optional<Author>>(HttpStatus.NOT_FOUND);
 		} 
-//			catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<Author>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
 	}
 	
 	@RequestMapping(path="/admin/authors/{authorId}/books", method = RequestMethod.GET)
@@ -99,34 +81,36 @@ public class AuthorController {
 		}catch(NoSuchElementException e) {
 			return new ResponseEntity<List<Book>>(HttpStatus.NOT_FOUND);
 		}
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<List<Book>>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
 	}
-//	@RequestMapping(path="/admin/authors/{authorId}/books/{bookId}", method = {RequestMethod.POST,RequestMethod.PUT})
-//	public ResponseEntity<Object>addToBookAuthor(@PathVariable int authorId, @PathVariable int bookId){
-//		try {
-//			authorService.addBookToAuthor(authorId, bookId);
-//			return new ResponseEntity<Object>(HttpStatus.ACCEPTED);
-//		}catch(SQLException e) {
-//			return new ResponseEntity<Object>(HttpStatus.CONFLICT);
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//	}
-//	@RequestMapping(path="/admin/authors/{authorId}/books/{bookId}", method = {RequestMethod.DELETE})
-//	public ResponseEntity<Object>deleteBookAuthor(@PathVariable int authorId, @PathVariable int bookId){
-//		try {
-//			authorService.deleteBookFromAuthor(authorId, bookId);
-//			return new ResponseEntity<Object>(HttpStatus.OK);
-//		}catch(SQLException e) {
-//			return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-//	}
+	@RequestMapping(path="/admin/authors/{authorId}/books/{bookId}", method = {RequestMethod.PUT})
+	public ResponseEntity<Book>addToBookAuthor(@PathVariable int authorId, @PathVariable int bookId){
+		try {
+			Book book = authorService.addAuthorFromBook(bookId, authorId);
+			return new ResponseEntity<Book>(book, HttpStatus.ACCEPTED);
+		}catch(NoSuchElementException e) {
+			return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
+		}
+	}
+	@RequestMapping(path="/admin/authors/{authorId}/books/{bookId}", method = {RequestMethod.POST})
+	public ResponseEntity<Book>postToBookAuthor(@PathVariable int authorId, @PathVariable int bookId){
+		try {
+			Book book = authorService.postAuthorFromBook(bookId, authorId);
+			if(book==null)
+				return new ResponseEntity<Book>(HttpStatus.CONFLICT);
+			else
+				return new ResponseEntity<Book>(book, HttpStatus.ACCEPTED);
+		}catch(NoSuchElementException e) {
+			return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
+		}
+	}
+	@RequestMapping(path="/admin/authors/{authorId}/books/{bookId}", method = {RequestMethod.DELETE})
+	public ResponseEntity<Book>deleteBookAuthor(@PathVariable int authorId, @PathVariable int bookId){
+		try {
+			Book book = authorService.deleteAuthorFromBook(bookId, authorId);
+			return new ResponseEntity<Book>(book, HttpStatus.OK);
+		}catch(NoSuchElementException e) {
+			return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
+		} 
+	}
 
 }

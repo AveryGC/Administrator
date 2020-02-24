@@ -32,32 +32,17 @@ public class GenreController {
 	
 	@RequestMapping(path = "/admin/genres", method = RequestMethod.GET)
 	public ResponseEntity<List<Genre>> getgenres(){
-//		try {
 			List <Genre> genres = genreService.readAllGenres();
 			return new ResponseEntity<List<Genre>>(genres,HttpStatus.OK);
-//		} catch (SQLException | ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<List<Genre>>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
 	}
-	
-//	@RequestMapping(path = "/admin/genres", method = {RequestMethod.DELETE, RequestMethod.PUT})
-//	public ResponseEntity<String> genreMethodNotAllowed() {
-//		return new ResponseEntity<String>(HttpStatus.METHOD_NOT_ALLOWED);
-//	}
-//	
+		
 	@RequestMapping(path = "/admin/genres/{genreId}", method = RequestMethod.GET)
 	public ResponseEntity<Genre> getgenre(@PathVariable int genreId){
 		try {
 			Genre genre = genreService.findGenreById(genreId);
 			return new ResponseEntity<Genre>(genre,HttpStatus.OK);
 		} catch (NoSuchElementException e) {
-			// TODO Auto-generated catch block
 			return new ResponseEntity<Genre>(HttpStatus.UNPROCESSABLE_ENTITY);}
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<Genre>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
 	}
 	@RequestMapping(path = {"/admin/genres"} , method = RequestMethod.POST)
 	public ResponseEntity<Genre> addgenre(@RequestBody Genre genre){
@@ -76,30 +61,20 @@ public class GenreController {
 			genreService.updateGenre(genre);
 			return new ResponseEntity<Genre>(genre,HttpStatus.OK);
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			return new ResponseEntity<Genre>(HttpStatus.UNPROCESSABLE_ENTITY);
 		}
-//			catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<Genre>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
 	}
-//	
+	
 	@RequestMapping(path = "/admin/genres/{genreId}", method = RequestMethod.DELETE)
 	public ResponseEntity<Genre> deletegenre(@PathVariable int genreId){
 		try {
 			Genre genre =genreService.deleteGenre(genreId);
 			return new ResponseEntity<Genre>(genre,HttpStatus.OK);
 		} catch (NoSuchElementException e) {
-			// TODO Auto-generated catch block
 			return new ResponseEntity<Genre>(HttpStatus.NOT_FOUND);
 		} 
-//	catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<Genre>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
 	}
-//	
+	
 	@RequestMapping(path="/admin/genres/{genreId}/books")
 	public ResponseEntity<List<Book>>readBooksBygenre(@PathVariable int genreId){
 		try {
@@ -108,9 +83,36 @@ public class GenreController {
 		}catch(NoSuchElementException e) {
 			return new ResponseEntity<List<Book>>(HttpStatus.NOT_FOUND);
 		} 
-//	catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			return new ResponseEntity<List<Book>>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
+	}
+	
+	@RequestMapping(path="/admin/genres/{genreId}/books/{bookId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Book>deleteBookFromGenre(@PathVariable int genreId, @PathVariable int bookId){
+		try {
+			Book book = genreService.deleteGenreFromBook(bookId, genreId);
+			return new ResponseEntity<Book>(book,HttpStatus.OK);
+		}catch(NoSuchElementException e) {
+			return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
+		}
+	}
+	@RequestMapping(path="/admin/genres/{genreId}/books/{bookId}", method = RequestMethod.PUT)
+	public ResponseEntity<Book>putBookFromGenre(@PathVariable int genreId, @PathVariable int bookId){
+		try {
+			Book book = genreService.addGenreToBook(bookId, genreId);
+			return new ResponseEntity<Book>(book,HttpStatus.ACCEPTED);
+		}catch(NoSuchElementException e) {
+			return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
+		}
+	}
+	@RequestMapping(path="/admin/genres/{genreId}/books/{bookId}", method = RequestMethod.POST)
+	public ResponseEntity<Book>postBookFromGenre(@PathVariable int genreId, @PathVariable int bookId){
+		try {
+			Book book = genreService.postGenreToBook(bookId, genreId);
+			if(book==null)
+				return new ResponseEntity<Book>(HttpStatus.CONFLICT);
+			else
+				return new ResponseEntity<Book>(book,HttpStatus.ACCEPTED);
+		}catch(NoSuchElementException e) {
+			return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
+		}
 	}
 }
