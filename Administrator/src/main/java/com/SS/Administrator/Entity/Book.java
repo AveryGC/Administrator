@@ -3,6 +3,7 @@ package com.SS.Administrator.Entity;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,14 +37,14 @@ public class Book implements Serializable {
 	@Column(name = "title")
     private String title;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@JoinTable(name = "tbl_book_authors",
 	inverseJoinColumns = @JoinColumn(name = "authorId"),
 	joinColumns = @JoinColumn(name = "bookId"))
 	@JsonManagedReference
 	private List<Author> authors;
 	
-	@ManyToMany//(fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	@Lazy(value = false)
 	@JoinTable(name = "tbl_book_genres",
 	joinColumns = @JoinColumn (name = "bookId"),
@@ -51,7 +52,7 @@ public class Book implements Serializable {
 	@JsonManagedReference
 	private List<Genre> genres;
 	
-	@ManyToOne//(fetch = FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.PERSIST)//(fetch = FetchType.EAGER)
 	@JoinColumn(name = "pubId", referencedColumnName = "publisherId")
 	@JsonManagedReference
 	private Publisher publisher;

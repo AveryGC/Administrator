@@ -29,13 +29,14 @@ public class GenreService {
 	
 	public void addGenre(Genre genre) throws IllegalArgumentException, SQLException {
 		if(genre.getGenreName()!=null) {
-			if(gDao.existsById(genre.getGenreId()))
-				throw new SQLException();
-			else {
-				Genre returned = gDao.save(genre);
-				gDao.flush();
-				genre= returned;
-			}
+			if(genre.getGenreId()!=null)
+				if(gDao.existsById(genre.getGenreId()))
+					throw new SQLException();
+				else {
+					Genre returned = gDao.save(genre);
+					gDao.flush();
+					genre= returned;
+				}
 		}else {
 			throw new IllegalArgumentException();
 		}

@@ -65,10 +65,8 @@ public class GenreController {
 			genreService.addGenre(genre);
 			return new ResponseEntity<Genre>(genre,HttpStatus.ACCEPTED);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			return new ResponseEntity<Genre>(HttpStatus.CONFLICT);
 		} catch (NoSuchElementException e) {
-			// TODO Auto-generated catch block
 			return new ResponseEntity<Genre>(HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 	}

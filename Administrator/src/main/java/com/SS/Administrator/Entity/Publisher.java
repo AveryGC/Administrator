@@ -37,9 +37,9 @@ public class Publisher implements Serializable {
 	@Column(name = "publisherAddress")
     private String publisherAddress;
 	
-	@OneToMany
+	@OneToMany(mappedBy = "publisher")
 	@JsonBackReference
-	private List<Book> books = new ArrayList<Book>();
+	private List<Book> books;
     
     
 
