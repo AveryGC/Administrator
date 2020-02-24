@@ -43,6 +43,8 @@ public class PublisherService {
 	}
 	public void updatePublisher(Publisher publisher) throws IllegalArgumentException {
 		if(publisher.getPublisherName()!=null&&publisher.getPublisherId()!=null) {
+			if(!pDao.existsById(publisher.getPublisherId()))
+				throw new NoSuchElementException();
 			Publisher returned = pDao.save(publisher);
 			pDao.flush();
 			publisher = returned;

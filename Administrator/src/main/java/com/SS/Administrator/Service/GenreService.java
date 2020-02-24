@@ -45,8 +45,10 @@ public class GenreService {
 		}
 	}
 	
-	public void updateGenre(Genre genre) throws IllegalArgumentException{
+	public void updateGenre(Genre genre) throws  NoSuchElementException, IllegalArgumentException{
 		if(genre.getGenreId()!=null&&genre.getGenreName()!=null) {
+			if(!gDao.existsById(genre.getGenreId()))
+				throw new NoSuchElementException();
 			Genre returned = gDao.save(genre);
 			gDao.flush();
 			genre= returned;

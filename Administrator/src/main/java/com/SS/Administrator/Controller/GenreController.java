@@ -62,7 +62,9 @@ public class GenreController {
 			return new ResponseEntity<Genre>(genre,HttpStatus.OK);
 		} catch (IllegalArgumentException e) {
 			return new ResponseEntity<Genre>(HttpStatus.UNPROCESSABLE_ENTITY);
-		}
+		}catch (NoSuchElementException e) {
+			return new ResponseEntity<Genre>(HttpStatus.NOT_FOUND);
+		} 
 	}
 	
 	@RequestMapping(path = "/admin/genres/{genreId}", method = RequestMethod.DELETE)

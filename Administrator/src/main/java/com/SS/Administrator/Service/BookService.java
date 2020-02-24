@@ -31,12 +31,15 @@ public class BookService {
 	public List<Book> readAllBooks(){
 		return bDao.findAll();
 	}
-	public void updateBook(Book book){
+	public void updateBook(Book book)throws IllegalArgumentException, NoSuchElementException{
 		if(book.getBookId()!=null&&book.getPublisher()!=null&&book.getTitle()!=null) {
-				Book returned = bDao.save(book);
-				bDao.flush();
-				book=returned;
-		}
+			if(!bDao.existsById(book.getBookId()))
+				throw new NoSuchElementException();
+			Book returned = bDao.save(book);
+			bDao.flush();
+			book=returned;
+		}else
+			throw new IllegalArgumentException();
 	}
 	public void addBook(Book book) throws SQLException {
 		if(book.getPublisher()!=null&&book.getTitle()!=null) {

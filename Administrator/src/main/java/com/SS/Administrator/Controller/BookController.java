@@ -87,7 +87,9 @@ public class BookController {
 			return new ResponseEntity<Genre>(genre,HttpStatus.ACCEPTED);
 		}catch (NoSuchElementException e) {
 			return new ResponseEntity<Genre>(HttpStatus.NOT_FOUND);
-		} 
+		} catch(IllegalArgumentException e) {
+			return new ResponseEntity<Genre>(HttpStatus.UNPROCESSABLE_ENTITY);
+		}
 	}
 	@RequestMapping(path = "/admin/books/{bookId}/genres/{genreId}" , method = {RequestMethod.POST})
 	public ResponseEntity<Genre> postGenreToBook(@PathVariable int bookId, @PathVariable int genreId){

@@ -39,8 +39,10 @@ public class AuthorService {
 			throw new IllegalArgumentException();
 	}
 	
-	public void updateAuthor(Author author) throws IllegalArgumentException {
+	public void updateAuthor(Author author) throws NoSuchElementException, IllegalArgumentException {
 		if(author.getAuthorID()!=null && author.getAuthorName()!=null) {
+			if(!aDao.existsById(author.getAuthorID()))
+				throw new NoSuchElementException();
 			Author returned = aDao.save(author);
 			aDao.flush();
 			author = returned;

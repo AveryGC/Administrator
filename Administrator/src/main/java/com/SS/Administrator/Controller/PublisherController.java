@@ -57,8 +57,10 @@ public class PublisherController {
 			return new ResponseEntity<Publisher>(publisher,HttpStatus.OK);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
-			return new ResponseEntity<Publisher> (HttpStatus.NOT_FOUND);
-		} 
+			return new ResponseEntity<Publisher> (HttpStatus.UNPROCESSABLE_ENTITY);
+		} catch(NoSuchElementException e) {
+			return new ResponseEntity<Publisher>(HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.GET)
