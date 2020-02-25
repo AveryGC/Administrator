@@ -3,7 +3,6 @@
  */
 package com.SS.Administrator.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -30,24 +29,23 @@ public class GenreService {
 		return gDao.findAll();
 	}
 	
-	public void addGenre(Genre genre) throws IllegalArgumentException, SQLException {
+	public void addGenre(Genre genre) throws IllegalArgumentException {
 		if(genre.getGenreName()!=null) {
-			if(genre.getGenreId()!=null)
-				if(gDao.existsById(genre.getGenreId()))
-					throw new SQLException();
-				else {
-					Genre returned = gDao.save(genre);
-					gDao.flush();
-					genre= returned;
-				}
+			if(genre.getGenre_Id()==null){
+				Genre returned = gDao.save(genre);
+				gDao.flush();
+				genre= returned;
+			}
+			else 
+				throw new IllegalArgumentException();
 		}else {
 			throw new IllegalArgumentException();
 		}
 	}
 	
 	public void updateGenre(Genre genre) throws  NoSuchElementException, IllegalArgumentException{
-		if(genre.getGenreId()!=null&&genre.getGenreName()!=null) {
-			if(!gDao.existsById(genre.getGenreId()))
+		if(genre.getGenre_Id()!=null&&genre.getGenreName()!=null) {
+			if(!gDao.existsById(genre.getGenre_Id()))
 				throw new NoSuchElementException();
 			Genre returned = gDao.save(genre);
 			gDao.flush();

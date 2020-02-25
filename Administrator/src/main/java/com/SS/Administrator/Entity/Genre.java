@@ -12,7 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 
@@ -22,6 +26,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  */
 @Entity
 @Table(name = "tbl_genre")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+		property = "genre_id")
 public class Genre implements Serializable {
 	/**
 	 * 
@@ -35,14 +41,17 @@ public class Genre implements Serializable {
     private String genreName;
 	
 	@ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
-	@JsonBackReference
+//	@JsonBackReference
+	@JsonIgnore
 	List<Book> books;
  
-    public Integer getGenreId() {
+	@JsonGetter(value = "genre_id")
+    public Integer getGenre_Id() {
         return genre_id;
     }
 
-    public void setGenreID(Integer genreId) {
+	@JsonSetter(value= "genre_id")
+    public void setGenre_Id(Integer genreId) {
         this.genre_id = genreId;
     }
 

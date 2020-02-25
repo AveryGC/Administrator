@@ -3,7 +3,6 @@
  */
 package com.SS.Administrator.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -27,16 +26,15 @@ public class PublisherService {
 		return pDao.findAll();
 	}
 	
-	public void addPublisher(Publisher publisher) throws IllegalArgumentException, SQLException {
+	public void addPublisher(Publisher publisher) throws IllegalArgumentException{
 		if(publisher.getPublisherName()!=null) {
-			if(publisher.getPublisherId()!=null)
-				if(pDao.existsById(publisher.getPublisherId()))
-					throw new SQLException();
-				else{
-					Publisher returned = pDao.save(publisher);
-					pDao.flush();
-					publisher = returned;
-				}
+			if(publisher.getPublisherId()==null){
+				Publisher returned = pDao.save(publisher);
+				pDao.flush();
+				publisher = returned;
+			}
+			else
+				throw new IllegalArgumentException();
 		}else {
 			throw new IllegalArgumentException();
 		}

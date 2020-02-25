@@ -26,22 +26,22 @@ public class AuthorService {
 		return aDao.findAll();
 	}
 	
-	public void addAuthor(Author author) throws IllegalArgumentException, SQLException{
+	public void addAuthor(Author author) throws IllegalArgumentException{
 		if(author.getAuthorName()!=null) {
-			if(aDao.existsById(author.getAuthorID()))
-				throw new SQLException();
-			else {
+			if(author.getAuthorId()==null){
 				Author returned =aDao.save(author);
 				aDao.flush();
 				author = returned;
 				}
+			else 
+				throw new IllegalArgumentException();
 		}else
 			throw new IllegalArgumentException();
 	}
 	
 	public void updateAuthor(Author author) throws NoSuchElementException, IllegalArgumentException {
-		if(author.getAuthorID()!=null && author.getAuthorName()!=null) {
-			if(!aDao.existsById(author.getAuthorID()))
+		if(author.getAuthorId()!=null && author.getAuthorName()!=null) {
+			if(!aDao.existsById(author.getAuthorId()))
 				throw new NoSuchElementException();
 			Author returned = aDao.save(author);
 			aDao.flush();

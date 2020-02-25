@@ -3,12 +3,12 @@
  */
 package com.SS.Administrator.Controller;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,27 +30,27 @@ public class PublisherController {
 	@Autowired
 	PublisherService publisherService;
 	
-	@RequestMapping(path="/admin/publishers", method = RequestMethod.GET)
+	@RequestMapping(path="/admin/publishers", method = RequestMethod.GET,produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<List<Publisher>> getPublishers(){
 		List<Publisher> publishers = publisherService.readAllPublishers();
 		return new ResponseEntity<List<Publisher>>(publishers,HttpStatus.OK);
 	}
 	
-	@RequestMapping(path= {"/admin/publishers"}, method = RequestMethod.POST)
+	@RequestMapping(path= {"/admin/publishers"}, method = RequestMethod.POST,produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Publisher> addPublisher(@RequestBody Publisher publisher){
 		try {
 			publisherService.addPublisher(publisher);
 			return new ResponseEntity<Publisher>(publisher,HttpStatus.ACCEPTED);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			return new ResponseEntity<Publisher> (HttpStatus.CONFLICT);
-		} catch (IllegalArgumentException e) {
+		}  catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			return new ResponseEntity<Publisher> (HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 	}
 	
-	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.PUT)
+	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.PUT,produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Publisher> updatePublisher(@RequestBody Publisher publisher, @PathVariable int publisherId){
 		if(publisherId!=publisher.getPublisherId())
 			return new ResponseEntity<Publisher>(HttpStatus.BAD_REQUEST);
@@ -65,7 +65,8 @@ public class PublisherController {
 		}
 	}
 	
-	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.GET)
+	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.GET,produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Publisher> readPublisher(@PathVariable int publisherId){
 		try {
 			Publisher publisher = publisherService.findPublisherById(publisherId);
@@ -76,7 +77,8 @@ public class PublisherController {
 		} 
 	}
 	
-	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.DELETE)
+	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.DELETE,produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Publisher> deletePublisher(@PathVariable int publisherId){
 		try {
 			publisherService.deletePublisher(publisherId);
@@ -87,7 +89,8 @@ public class PublisherController {
 		}
 	}
 //	
-	@RequestMapping(path="/admin/publishers/{publisherId}/books", method = RequestMethod.GET)
+	@RequestMapping(path="/admin/publishers/{publisherId}/books", method = RequestMethod.GET,produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<List<Book>> readBooksByPublisher(@PathVariable int publisherId){
 		try {
 			List<Book> books = publisherService.readBooksByPublisher(publisherId);

@@ -12,6 +12,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 /**
@@ -20,6 +24,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  */
 @Entity
 @Table(name = "tbl_publisher")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+		property = "publisherId")
 public class Publisher implements Serializable {
 	/**
 	 * 
@@ -36,7 +42,8 @@ public class Publisher implements Serializable {
     private String publisherAddress;
 	
 	@OneToMany(mappedBy = "publisher")
-	@JsonBackReference
+//	@JsonBackReference
+	@JsonIgnore
 	private List<Book> books;
     
     

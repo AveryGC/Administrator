@@ -1,6 +1,5 @@
 package com.SS.Administrator.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -41,17 +40,17 @@ public class BookService {
 		}else
 			throw new IllegalArgumentException();
 	}
-	public void addBook(Book book) throws SQLException {
+	public void addBook(Book book) throws IllegalArgumentException {
 		if(book.getPublisher()!=null&&book.getTitle()!=null) {
-			if(book.getBookId()!=null) {
-				if(bDao.existsById(book.getBookId()))
-					throw new SQLException();
-			}else {
+			if(book.getBookId()==null) {
 				Book returned = bDao.save(book);
 				bDao.flush();
 				book=returned;
+			}else {
+				throw new IllegalArgumentException();
 			}
-		}
+		}else
+			throw new IllegalArgumentException();
 	}
 	public Book deleteBook(int bookId) throws NoSuchElementException{
 		Book deletedBook = bDao.findById(bookId).get();
