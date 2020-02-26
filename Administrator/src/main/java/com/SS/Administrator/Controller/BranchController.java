@@ -51,12 +51,8 @@ public class BranchController {
 	public ResponseEntity<Branch>updateBranch(@RequestBody@NotEmpty Branch branch,@NotBlank @PathVariable int branchId){
 		if(branchId!=branch.getBranchId())
 			return new ResponseEntity<Branch>(HttpStatus.BAD_REQUEST);
-		try {
-			branchService.updateBranch(branch);
-			return new ResponseEntity<Branch>(HttpStatus.ACCEPTED);
-		}catch(IllegalArgumentException e) {
-			return new ResponseEntity<Branch>(HttpStatus.UNPROCESSABLE_ENTITY);
-		}
+		branchService.updateBranch(branch);
+		return new ResponseEntity<Branch>(HttpStatus.ACCEPTED);
 	}
 	
 	@RequestMapping(path="/{branchId}", method = RequestMethod.GET,produces ={

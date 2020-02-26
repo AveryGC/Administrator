@@ -23,10 +23,55 @@ class BorrowerServiceTest {
 	private BorrowerService service;
 
 	@Test
-	void testFailCases() {
+	void testAddFailCases() {
 		try {
 			Borrower borrower = new Borrower();
 			borrower.setAddress(null);
+			service.addBorrower(borrower);
+			fail();
+		}catch(IllegalArgumentException e) {}
+		try {
+			Borrower borrower = new Borrower();
+			borrower.setAddress(null);
+			borrower.setName("fake name");
+			borrower.setPhone("fake phone");
+			borrower.setCardNo(null);
+			service.addBorrower(borrower);
+			fail();
+		}catch(IllegalArgumentException e) {}
+		try {
+			Borrower borrower = new Borrower();
+			borrower.setAddress("test addresss");
+			borrower.setName(null);
+			borrower.setPhone("fake phone");
+			borrower.setCardNo(null);
+			service.addBorrower(borrower);
+			fail();
+		}catch(IllegalArgumentException e) {}
+		try {
+			Borrower borrower = new Borrower();
+			borrower.setAddress("test addresss");
+			borrower.setName("fake name");
+			borrower.setPhone(null);
+			borrower.setCardNo(null);
+			service.addBorrower(borrower);
+			fail();
+		}catch(IllegalArgumentException e) {}
+		try {
+			Borrower borrower = new Borrower();
+			borrower.setAddress(null);
+			borrower.setName("fake name");
+			borrower.setPhone(null);
+			borrower.setCardNo(null);
+			service.addBorrower(borrower);
+			fail();
+		}catch(IllegalArgumentException e) {}
+		try {
+			Borrower borrower = new Borrower();
+			borrower.setAddress("test addresss");
+			borrower.setName(null);
+			borrower.setPhone(null);
+			borrower.setCardNo(null);
 			service.addBorrower(borrower);
 			fail();
 		}catch(IllegalArgumentException e) {}
@@ -39,6 +84,9 @@ class BorrowerServiceTest {
 			service.addBorrower(borrower);
 			fail();
 		}catch(IllegalArgumentException e) {}
+	}
+	@Test
+	void testUpdateFail(){
 		try {
 			Borrower borrower = new Borrower();
 			borrower.setCardNo(-1);
@@ -65,10 +113,15 @@ class BorrowerServiceTest {
 		Borrower foundById = service.findBorrowerById(borrower.getCardNo());
 		assertEquals(borrower, foundById);
 		
-		//testupdatesuccesfull
+		//testUpdateSuccesfull
+		borrower.setAddress("can i be faker");
 		service.updateBorrower(borrower);
 		
 		//delete test subject
 		service.deleteBorrower(borrower.getCardNo());
+	}
+	@Test
+	void testReadAll() {
+		assertNotEquals(0, service.readAllBorrowers());
 	}
 }

@@ -66,12 +66,8 @@ public class GenreController {
 	public ResponseEntity<Genre> updategenre(@RequestBody@NotEmpty  Genre genre, @PathVariable@NotBlank int genreId){
 		if(genreId != genre.getGenre_Id())
 			return new ResponseEntity<Genre>(HttpStatus.BAD_REQUEST);
-		try {
-			genreService.updateGenre(genre);
-			return new ResponseEntity<Genre>(HttpStatus.OK);
-		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<Genre>(HttpStatus.UNPROCESSABLE_ENTITY);
-		}
+		genreService.updateGenre(genre);
+		return new ResponseEntity<Genre>(HttpStatus.OK);
 	}
 	
 	@RequestMapping(path = "/{genreId}", method = RequestMethod.DELETE,produces ={

@@ -58,12 +58,8 @@ public class AuthorController {
 	public ResponseEntity<Author> updateAuthor(@RequestBody @NotEmpty Author author, @PathVariable@NotBlank int authorId){
 		if(author.getAuthorId()!= authorId)
 			return new ResponseEntity<Author>(HttpStatus.BAD_REQUEST);
-		try {	
-			authorService.updateAuthor(author);
-			return new ResponseEntity<Author>(HttpStatus.OK);
-		}catch(IllegalArgumentException e) {
-			return new ResponseEntity<Author>(HttpStatus.UNPROCESSABLE_ENTITY);
-		}
+		authorService.updateAuthor(author);
+		return new ResponseEntity<Author>(HttpStatus.OK);
 	}
 	
 	@RequestMapping(path = "/{authorId}", method = RequestMethod.DELETE,produces ={

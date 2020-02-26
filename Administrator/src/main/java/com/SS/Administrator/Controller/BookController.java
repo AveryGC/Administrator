@@ -60,12 +60,8 @@ public class BookController {
 	public ResponseEntity<Book> updateBook(@RequestBody@NotEmpty  Book book, @PathVariable@NotBlank int bookId){
 		if(bookId != book.getBookId())
 			return new ResponseEntity<Book>(HttpStatus.BAD_REQUEST);
-		try {
-			bookService.updateBook(book);
-			return new ResponseEntity<Book>(HttpStatus.ACCEPTED);
-		}catch(IllegalArgumentException e) {
-			return new ResponseEntity<Book>(HttpStatus.UNPROCESSABLE_ENTITY);
-		}
+		bookService.updateBook(book);
+		return new ResponseEntity<Book>(HttpStatus.ACCEPTED);
 	}
 	@RequestMapping(path = "/{bookId}", method = RequestMethod.DELETE,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })

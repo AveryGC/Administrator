@@ -44,12 +44,8 @@ public class BorrowerController {
 	public ResponseEntity<String> updateBorrower(@PathVariable@NotBlank int borrowerId,@RequestBody@NotEmpty  Borrower borrower){
 		if(borrower.getCardNo()!=borrowerId)
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
-		try {
-			borrowerService.updateBorrower(borrower);
-			return new ResponseEntity<String>(HttpStatus.ACCEPTED);
-		}catch(IllegalArgumentException e) {
-			return new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
-		}
+		borrowerService.updateBorrower(borrower);
+		return new ResponseEntity<String>(HttpStatus.ACCEPTED);
 	}
 	
 	@RequestMapping(path="/{borrowerId}", method = RequestMethod.GET,produces ={

@@ -55,13 +55,8 @@ public class PublisherController {
 	public ResponseEntity<Publisher> updatePublisher(@RequestBody@NotEmpty  Publisher publisher, @PathVariable@NotBlank int publisherId){
 		if(publisherId!=publisher.getPublisherId())
 			return new ResponseEntity<Publisher>(HttpStatus.BAD_REQUEST);
-		try {
-			publisherService.updatePublisher(publisher);
-			return new ResponseEntity<Publisher>(HttpStatus.OK);
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			return new ResponseEntity<Publisher> (HttpStatus.UNPROCESSABLE_ENTITY);
-		}
+		publisherService.updatePublisher(publisher);
+		return new ResponseEntity<Publisher>(HttpStatus.OK);
 	}
 	
 	@RequestMapping(path="/{publisherId}", method = RequestMethod.GET,produces ={
