@@ -17,10 +17,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.annotation.AccessType;
+import org.springframework.data.annotation.AccessType.Type;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * @author acorb
@@ -28,8 +28,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  */
 @Entity
 @Table(name = "tbl_book")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, 
-	property = "bookId")
+@AccessType(value = Type.FIELD)
 public class Book implements Serializable {
 	/**
 	 * 

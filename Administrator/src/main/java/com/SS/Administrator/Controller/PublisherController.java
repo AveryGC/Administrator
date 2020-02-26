@@ -6,6 +6,9 @@ package com.SS.Administrator.Controller;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,72 +29,58 @@ import com.SS.Administrator.Service.PublisherService;
  *
  */
 @RestController
+@RequestMapping(path = "/admin/publishers")
 public class PublisherController {
 	@Autowired
-	PublisherService publisherService;
+	private PublisherService publisherService;
 	
-	@RequestMapping(path="/admin/publishers", method = RequestMethod.GET,produces ={
-			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	@RequestMapping(method = RequestMethod.GET,produces ={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<List<Publisher>> getPublishers(){
 		List<Publisher> publishers = publisherService.readAllPublishers();
 		return new ResponseEntity<List<Publisher>>(publishers,HttpStatus.OK);
 	}
 	
-	@RequestMapping(path= {"/admin/publishers"}, method = RequestMethod.POST,produces ={
-			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	@RequestMapping(method = RequestMethod.POST,produces ={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Publisher> addPublisher(@RequestBody Publisher publisher){
 		try {
 			publisherService.addPublisher(publisher);
-			return new ResponseEntity<Publisher>(publisher,HttpStatus.ACCEPTED);
+			return new ResponseEntity<Publisher>(publisher,HttpStatus.CREATED);
 		}  catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			return new ResponseEntity<Publisher> (HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 	}
 	
-	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.PUT,produces ={
+	@RequestMapping(path="/{publisherId}", method = RequestMethod.PUT,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Publisher> updatePublisher(@RequestBody Publisher publisher, @PathVariable int publisherId){
+	public ResponseEntity<Publisher> updatePublisher(@RequestBody@NotEmpty  Publisher publisher, @PathVariable@NotBlank int publisherId){
 		if(publisherId!=publisher.getPublisherId())
 			return new ResponseEntity<Publisher>(HttpStatus.BAD_REQUEST);
 		try {
 			publisherService.updatePublisher(publisher);
-			return new ResponseEntity<Publisher>(publisher,HttpStatus.OK);
+			return new ResponseEntity<Publisher>(HttpStatus.OK);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			return new ResponseEntity<Publisher> (HttpStatus.UNPROCESSABLE_ENTITY);
-		} catch(NoSuchElementException e) {
-			return new ResponseEntity<Publisher>(HttpStatus.NOT_FOUND);
 		}
 	}
 	
-	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.GET,produces ={
+	@RequestMapping(path="/{publisherId}", method = RequestMethod.GET,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Publisher> readPublisher(@PathVariable int publisherId){
-		try {
+	public ResponseEntity<Publisher> readPublisher(@PathVariable@NotBlank int publisherId){
 			Publisher publisher = publisherService.findPublisherById(publisherId);
 			return new ResponseEntity<Publisher>(publisher,HttpStatus.OK);
-		} catch (NoSuchElementException e) {
-			// TODO Auto-generated catch block
-			return new ResponseEntity<Publisher> (HttpStatus.NOT_FOUND);
-		} 
 	}
 	
-	@RequestMapping(path="/admin/publishers/{publisherId}", method = RequestMethod.DELETE,produces ={
+	@RequestMapping(path="/{publisherId}", method = RequestMethod.DELETE,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Publisher> deletePublisher(@PathVariable int publisherId){
-		try {
+	public ResponseEntity<Publisher> deletePublisher(@PathVariable@NotBlank int publisherId){
 			publisherService.deletePublisher(publisherId);
 			return new ResponseEntity<Publisher>(HttpStatus.OK);
-		} catch (NoSuchElementException e) {
-			// TODO Auto-generated catch block
-			return new ResponseEntity<Publisher> (HttpStatus.NOT_FOUND);
-		}
 	}
 //	
-	@RequestMapping(path="/admin/publishers/{publisherId}/books", method = RequestMethod.GET,produces ={
+	@RequestMapping(path="/{publisherId}/books", method = RequestMethod.GET,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<List<Book>> readBooksByPublisher(@PathVariable int publisherId){
+	public ResponseEntity<List<Book>> readBooksByPublisher(@PathVariable@NotBlank int publisherId){
 		try {
 			List<Book> books = publisherService.readBooksByPublisher(publisherId);
 			return new ResponseEntity<List<Book>>(books,HttpStatus.OK);

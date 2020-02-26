@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.SS.Administrator.DAO.AuthorDAO;
 import com.SS.Administrator.DAO.BookDAO;
@@ -16,6 +17,7 @@ import com.SS.Administrator.Entity.Genre;
 import com.SS.Administrator.Entity.Publisher;
 
 @Component
+@Transactional
 public class BookService {
 
 	@Autowired
@@ -30,18 +32,15 @@ public class BookService {
 	public List<Book> readAllBooks(){
 		return bDao.findAll();
 	}
-	public void updateBook(Book book)throws IllegalArgumentException, NoSuchElementException{
-		if(book.getBookId()!=null&&book.getPublisher()!=null&&book.getTitle()!=null) {
-			if(!bDao.existsById(book.getBookId()))
-				throw new NoSuchElementException();
-			Book returned = bDao.save(book);
-			bDao.flush();
-			book=returned;
-		}else
-			throw new IllegalArgumentException();
+	public void updateBook(Book book)throws NoSuchElementException{
+		if(!bDao.existsById(book.getBookId()))
+			throw new NoSuchElementException();
+		Book returned = bDao.save(book);
+		bDao.flush();
+		book=returned;
 	}
 	public void addBook(Book book) throws IllegalArgumentException {
-		if(book.getPublisher()!=null&&book.getTitle()!=null) {
+		if(book.getPublisher()!=null&&book.getTitle()!=null&&book.getAuthors()!=null&&book.getGenres()!=null) {
 			if(book.getBookId()==null) {
 				Book returned = bDao.save(book);
 				bDao.flush();
