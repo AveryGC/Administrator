@@ -59,7 +59,7 @@ public class AuthorController {
 		if(author.getAuthorId()!= authorId)
 			return new ResponseEntity<Author>(HttpStatus.BAD_REQUEST);
 		authorService.updateAuthor(author);
-		return new ResponseEntity<Author>(HttpStatus.OK);
+		return new ResponseEntity<Author>(HttpStatus.ACCEPTED);
 	}
 	
 	@RequestMapping(path = "/{authorId}", method = RequestMethod.DELETE,produces ={

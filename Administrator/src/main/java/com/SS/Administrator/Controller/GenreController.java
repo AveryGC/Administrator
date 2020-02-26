@@ -55,7 +55,7 @@ public class GenreController {
 	public ResponseEntity<Genre> addgenre(@RequestBody Genre genre){
 		try {
 			genreService.addGenre(genre);
-			return new ResponseEntity<Genre>(genre,HttpStatus.ACCEPTED);
+			return new ResponseEntity<Genre>(genre,HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
 			return new ResponseEntity<Genre>(HttpStatus.UNPROCESSABLE_ENTITY);
 		}
@@ -67,7 +67,7 @@ public class GenreController {
 		if(genreId != genre.getGenre_Id())
 			return new ResponseEntity<Genre>(HttpStatus.BAD_REQUEST);
 		genreService.updateGenre(genre);
-		return new ResponseEntity<Genre>(HttpStatus.OK);
+		return new ResponseEntity<Genre>(HttpStatus.ACCEPTED);
 	}
 	
 	@RequestMapping(path = "/{genreId}", method = RequestMethod.DELETE,produces ={
@@ -77,7 +77,7 @@ public class GenreController {
 		return new ResponseEntity<Genre>(genre,HttpStatus.OK); 
 	}
 	
-	@RequestMapping(path="/{genreId}/books",produces ={
+	@RequestMapping(path="/{genreId}/books",method = RequestMethod.GET, produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<List<Book>>readBooksBygenre(@PathVariable @NotBlank int genreId){
 		List <Book> books = genreService.readBooksInGenre(genreId);
