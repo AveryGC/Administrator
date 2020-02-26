@@ -12,7 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.data.annotation.AccessType;
+import org.springframework.data.annotation.AccessType.Type;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author acorb
@@ -20,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  */
 @Entity
 @Table(name = "tbl_author")
+@AccessType(value = Type.FIELD)
 public class Author implements Serializable{
 /**
 	 * 
@@ -31,39 +35,44 @@ public class Author implements Serializable{
 //	private static final long serialVersionUID = 5069100490580210474L;
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer authorID;
+	private Integer authorId;
 	@Column(name = "authorName")
     private String authorName;
 	@ManyToMany(mappedBy = "authors",fetch = FetchType.LAZY)
-	@JsonBackReference
+//	@JsonBackReference
+	@JsonIgnore
 	List<Book> books;
 
 
     @Override
 	public String toString() {
-		return "Author [authorID=" + authorID + ", authorName=" + authorName + "]";
+		return "Author [authorID=" + authorId + ", authorName=" + authorName + "]";
 	}
 
-	public Integer getAuthorID() {
-        return authorID;
+	public Integer getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthorID(Integer authorID) {
-        this.authorID = authorID;
+	
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
     }
 
     public String getAuthorName() {
         return authorName;
     }
 
+    
     public void setAuthorName(String authorName) {
         this.authorName = authorName;
     }
 
+    
 	public List<Book> getBooks() {
 		return books;
 	}
 
+	
 	public void setBooks(List<Book> books) {
 		this.books = books;
 	}
@@ -72,7 +81,7 @@ public class Author implements Serializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((authorID == null) ? 0 : authorID.hashCode());
+		result = prime * result + ((authorId == null) ? 0 : authorId.hashCode());
 		result = prime * result + ((authorName == null) ? 0 : authorName.hashCode());
 		return result;
 	}
@@ -86,10 +95,10 @@ public class Author implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Author other = (Author) obj;
-		if (authorID == null) {
-			if (other.authorID != null)
+		if (authorId == null) {
+			if (other.authorId != null)
 				return false;
-		} else if (!authorID.equals(other.authorID))
+		} else if (!authorId.equals(other.authorId))
 			return false;
 		if (authorName == null) {
 			if (other.authorName != null)

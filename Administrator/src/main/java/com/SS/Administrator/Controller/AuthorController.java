@@ -1,13 +1,14 @@
 package com.SS.Administrator.Controller;
 
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,104 +22,79 @@ import com.SS.Administrator.Service.AuthorService;
 
 
 @RestController
+@RequestMapping(path = "/admin/authors")
 public class AuthorController {
 
 	@Autowired
-	AuthorService authorService;
+	private AuthorService authorService;
 	
-	@RequestMapping(path = "/admin/authors", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET,produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<List<Author>> getAuthors(){
 		List <Author> authors = authorService.readAllAuthors();
 		return new ResponseEntity<List<Author>>(authors,HttpStatus.OK);
 	}
 	
-	@RequestMapping(path = "/admin/authors", method = {RequestMethod.DELETE, RequestMethod.PUT})
-	public ResponseEntity<String> authorMethodNotAllowed() {
-		return new ResponseEntity<String>(HttpStatus.METHOD_NOT_ALLOWED);
+	@RequestMapping(path = "/{authorId}", method = RequestMethod.GET,produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<Author> getAuthor(@PathVariable@NotBlank int authorId){
+		Author author = authorService.findAuthorById(authorId);
+		return new ResponseEntity<Author>(author,HttpStatus.OK);
 	}
 	
-	@RequestMapping(path = "/admin/authors/{authorId}", method = RequestMethod.GET)
-	public ResponseEntity<Author> getAuthor(@PathVariable int authorId){
-		try {
-			Author author = authorService.findAuthorById(authorId);
-			return new ResponseEntity<Author>(author,HttpStatus.OK);
-		}catch(NoSuchElementException e) {
-			return new ResponseEntity<Author>(HttpStatus.NOT_FOUND);
-		}
-	}
-	@RequestMapping(path = {"/admin/authors"} , method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST, consumes ={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+			produces ={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Author> addAuthor(@RequestBody Author author){
 		try {
 			authorService.addAuthor(author);
-			return new ResponseEntity<Author>(author,HttpStatus.ACCEPTED);
-		} catch (SQLException e) {
-			return new ResponseEntity<Author>(HttpStatus.CONFLICT);
-		}catch(NullPointerException e) {
-			return new ResponseEntity<Author>(HttpStatus.UNPROCESSABLE_ENTITY);
-		}
-	}
-	@RequestMapping(path = "/admin/authors/{authorId}", method = RequestMethod.PUT)
-	public ResponseEntity<Author> updateAuthor(@RequestBody Author author, @PathVariable int authorId){
-		if(author.getAuthorID()!= authorId)
-			return new ResponseEntity<Author>(HttpStatus.BAD_REQUEST);
-		try {	
-			authorService.updateAuthor(author);
-			return new ResponseEntity<Author>(author,HttpStatus.OK);
-		}catch(NoSuchElementException e) {
-			return new ResponseEntity<Author>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Author>(author,HttpStatus.CREATED);
 		}catch(IllegalArgumentException e) {
 			return new ResponseEntity<Author>(HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 	}
-	
-	@RequestMapping(path = "/admin/authors/{authorId}", method = RequestMethod.DELETE)
-	public ResponseEntity<Optional<Author>> deleteAuthor(@PathVariable int authorId){
-		try {
-			Optional<Author> deletedAuthor = authorService.deleteAuthor(authorId);
-			return new ResponseEntity<Optional<Author>>(deletedAuthor,HttpStatus.OK);
-		} catch (SQLException e) {
-			return new ResponseEntity<Optional<Author>>(HttpStatus.NOT_FOUND);
-		} 
+	@RequestMapping(path = "/{authorId}", method = RequestMethod.PUT, consumes = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },produces ={
+					MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<Author> updateAuthor(@RequestBody @NotEmpty Author author, @PathVariable@NotBlank int authorId){
+		if(author.getAuthorId()!= authorId)
+			return new ResponseEntity<Author>(HttpStatus.BAD_REQUEST);
+		authorService.updateAuthor(author);
+		return new ResponseEntity<Author>(HttpStatus.OK);
 	}
 	
-	@RequestMapping(path="/admin/authors/{authorId}/books", method = RequestMethod.GET)
-	public ResponseEntity<List<Book>>readBooksByAuthor(@PathVariable int authorId){
-		try {
-			List <Book> books = authorService.readBooksByAuthor(authorId);
-			return new ResponseEntity<List<Book>>(books,HttpStatus.OK);
-		}catch(NoSuchElementException e) {
-			return new ResponseEntity<List<Book>>(HttpStatus.NOT_FOUND);
-		}
+	@RequestMapping(path = "/{authorId}", method = RequestMethod.DELETE,produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<Author> deleteAuthor(@PathVariable@NotBlank int authorId){
+		Author deletedAuthor = authorService.deleteAuthor(authorId);
+		return new ResponseEntity<Author>(deletedAuthor,HttpStatus.OK);
 	}
-	@RequestMapping(path="/admin/authors/{authorId}/books/{bookId}", method = {RequestMethod.PUT})
-	public ResponseEntity<Book>addToBookAuthor(@PathVariable int authorId, @PathVariable int bookId){
-		try {
-			Book book = authorService.addAuthorFromBook(bookId, authorId);
+	
+	@RequestMapping(path="/{authorId}/books", method = RequestMethod.GET,produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<Book>>readBooksByAuthor(@PathVariable@NotBlank int authorId){
+		List <Book> books = authorService.readBooksByAuthor(authorId);
+		return new ResponseEntity<List<Book>>(books,HttpStatus.OK);
+	}
+	@RequestMapping(path="/{authorId}/books/{bookId}", method = {RequestMethod.PUT},produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<Book>addToBookAuthor(@PathVariable@NotBlank int authorId, @PathVariable@NotBlank int bookId){
+		authorService.addAuthorFromBook(bookId, authorId);
+		return new ResponseEntity<Book>(HttpStatus.ACCEPTED);
+	}
+	@RequestMapping(path="/{authorId}/books/{bookId}", method = {RequestMethod.POST},produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<Book>postToBookAuthor(@PathVariable@NotBlank int authorId, @PathVariable@NotBlank int bookId){
+		Book book = authorService.postAuthorFromBook(bookId, authorId);
+		if(book==null)
+			return new ResponseEntity<Book>(HttpStatus.CONFLICT);
+		else
 			return new ResponseEntity<Book>(book, HttpStatus.ACCEPTED);
-		}catch(NoSuchElementException e) {
-			return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
-		}
 	}
-	@RequestMapping(path="/admin/authors/{authorId}/books/{bookId}", method = {RequestMethod.POST})
-	public ResponseEntity<Book>postToBookAuthor(@PathVariable int authorId, @PathVariable int bookId){
-		try {
-			Book book = authorService.postAuthorFromBook(bookId, authorId);
-			if(book==null)
-				return new ResponseEntity<Book>(HttpStatus.CONFLICT);
-			else
-				return new ResponseEntity<Book>(book, HttpStatus.ACCEPTED);
-		}catch(NoSuchElementException e) {
-			return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
-		}
-	}
-	@RequestMapping(path="/admin/authors/{authorId}/books/{bookId}", method = {RequestMethod.DELETE})
-	public ResponseEntity<Book>deleteBookAuthor(@PathVariable int authorId, @PathVariable int bookId){
-		try {
-			Book book = authorService.deleteAuthorFromBook(bookId, authorId);
-			return new ResponseEntity<Book>(book, HttpStatus.OK);
-		}catch(NoSuchElementException e) {
-			return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
-		} 
+	@RequestMapping(path="/{authorId}/books/{bookId}", method = {RequestMethod.DELETE},produces ={
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<Book>deleteBookAuthor(@PathVariable@NotBlank int authorId, @PathVariable@NotBlank int bookId){
+		Book book = authorService.deleteAuthorFromBook(bookId, authorId);
+		return new ResponseEntity<Book>(book, HttpStatus.OK);
 	}
 
 }

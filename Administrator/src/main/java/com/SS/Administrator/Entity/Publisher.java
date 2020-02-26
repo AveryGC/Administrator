@@ -11,7 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.data.annotation.AccessType;
+import org.springframework.data.annotation.AccessType.Type;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -20,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  */
 @Entity
 @Table(name = "tbl_publisher")
+@AccessType(value = Type.FIELD)
 public class Publisher implements Serializable {
 	/**
 	 * 
@@ -36,7 +40,8 @@ public class Publisher implements Serializable {
     private String publisherAddress;
 	
 	@OneToMany(mappedBy = "publisher")
-	@JsonBackReference
+//	@JsonBackReference
+	@JsonIgnore
 	private List<Book> books;
     
     

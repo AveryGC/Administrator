@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.annotation.AccessType;
+import org.springframework.data.annotation.AccessType.Type;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
  */
 @Entity
 @Table(name = "tbl_book")
+@AccessType(value = Type.FIELD)
 public class Book implements Serializable {
 	/**
 	 * 
@@ -41,7 +44,7 @@ public class Book implements Serializable {
 	@JoinTable(name = "tbl_book_authors",
 	inverseJoinColumns = @JoinColumn(name = "authorId"),
 	joinColumns = @JoinColumn(name = "bookId"))
-	@JsonManagedReference
+//	@JsonManagedReference
 	private List<Author> authors;
 	
 	@ManyToMany(cascade = CascadeType.PERSIST)
@@ -49,10 +52,11 @@ public class Book implements Serializable {
 	@JoinTable(name = "tbl_book_genres",
 	joinColumns = @JoinColumn (name = "bookId"),
 	inverseJoinColumns =  @JoinColumn (name= "genre_id"))
-	@JsonManagedReference
+//	@JsonManagedReference
 	private List<Genre> genres;
 	
 	@ManyToOne(cascade = CascadeType.PERSIST)//(fetch = FetchType.EAGER)
+	@Lazy(value = false)
 	@JoinColumn(name = "pubId", referencedColumnName = "publisherId")
 	@JsonManagedReference
 	private Publisher publisher;

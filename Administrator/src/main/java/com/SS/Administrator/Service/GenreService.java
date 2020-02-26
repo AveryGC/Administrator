@@ -3,12 +3,12 @@
  */
 package com.SS.Administrator.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.SS.Administrator.DAO.BookDAO;
 import com.SS.Administrator.DAO.GenreDAO;
@@ -20,45 +20,50 @@ import com.SS.Administrator.Entity.Genre;
  *
  */
 @Component
+@Transactional
 public class GenreService {
 	@Autowired
-	GenreDAO gDao;
+	private GenreDAO gDao;
 	@Autowired
-	BookDAO bDao;
+	private BookDAO bDao;
 	
 	public List<Genre> readAllGenres(){
 		return gDao.findAll();
 	}
 	
-	public void addGenre(Genre genre) throws IllegalArgumentException, SQLException {
+	public void addGenre(Genre genre) throws IllegalArgumentException {
 		if(genre.getGenreName()!=null) {
-			if(genre.getGenreId()!=null)
-				if(gDao.existsById(genre.getGenreId()))
-					throw new SQLException();
-				else {
-					Genre returned = gDao.save(genre);
-					gDao.flush();
-					genre= returned;
-				}
+			if(genre.getGenre_Id()==null){
+				Genre returned = gDao.save(genre);
+				gDao.flush();
+				genre= returned;
+			}
+			else 
+				throw new IllegalArgumentException();
 		}else {
 			throw new IllegalArgumentException();
 		}
 	}
 	
-	public void updateGenre(Genre genre) throws  NoSuchElementException, IllegalArgumentException{
-		if(genre.getGenreId()!=null&&genre.getGenreName()!=null) {
-			if(!gDao.existsById(genre.getGenreId()))
-				throw new NoSuchElementException();
-			Genre returned = gDao.save(genre);
-			gDao.flush();
-			genre= returned;
-		}else
-			throw new IllegalArgumentException();
+	public void updateGenre(Genre genre) throws  NoSuchElementException{
+		if(!gDao.existsById(genre.getGenre_Id()))
+			throw new NoSuchElementException();
+		Genre returned = gDao.save(genre);
+		gDao.flush();
+		genre= returned;
 	}
 	
 	public Genre deleteGenre(int genreId)throws NoSuchElementException {
 		Genre deletedGenre = gDao.findById(genreId).get();
+		deletedGenre.getBooks().forEach(b->{
+			b.getGenres().remove(deletedGenre);
+			if(b.getGenres().size()==0)
+				bDao.delete(b);
+			else
+				bDao.save(b);
+		});
 		gDao.deleteById(genreId);
+		bDao.flush();
 		gDao.flush();
 		return deletedGenre;
 	}

@@ -1,13 +1,13 @@
 package com.SS.Administrator.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-
+import org.bouncycastle.asn1.DLExternal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.SS.Administrator.DAO.AuthorDAO;
 import com.SS.Administrator.DAO.BookDAO;
@@ -16,6 +16,7 @@ import com.SS.Administrator.Entity.Book;
 
 
 @Component
+@Transactional
 public class AuthorService {
 	@Autowired
 	private AuthorDAO aDao;
@@ -26,37 +27,39 @@ public class AuthorService {
 		return aDao.findAll();
 	}
 	
-	public void addAuthor(Author author) throws IllegalArgumentException, SQLException{
+	public void addAuthor(Author author) throws IllegalArgumentException{
 		if(author.getAuthorName()!=null) {
-			if(aDao.existsById(author.getAuthorID()))
-				throw new SQLException();
-			else {
+			if(author.getAuthorId()==null){
 				Author returned =aDao.save(author);
 				aDao.flush();
 				author = returned;
 				}
+			else 
+				throw new IllegalArgumentException();
 		}else
 			throw new IllegalArgumentException();
 	}
 	
-	public void updateAuthor(Author author) throws NoSuchElementException, IllegalArgumentException {
-		if(author.getAuthorID()!=null && author.getAuthorName()!=null) {
-			if(!aDao.existsById(author.getAuthorID()))
-				throw new NoSuchElementException();
-			Author returned = aDao.save(author);
-			aDao.flush();
-			author = returned;
-		}else
-			throw new IllegalArgumentException();
+	public void updateAuthor(Author author) throws IllegalArgumentException {
+		if(!aDao.existsById(author.getAuthorId()))
+			throw new NoSuchElementException();
+		Author returned = aDao.save(author);
+		aDao.flush();
+		author = returned;
 	}
-	public Optional<Author> deleteAuthor(int authorId) throws SQLException {
-		if(aDao.existsById(authorId)) {
-			Optional<Author> deletedAuthor = aDao.findById( authorId);
-			aDao.deleteById(authorId);
-			aDao.flush();
-			return deletedAuthor;
-		}else
-			throw new SQLException();
+	public Author deleteAuthor(int authorId) {
+		Author deletedAuthor = aDao.findById( authorId).get();
+		deletedAuthor.getBooks().forEach(b->{
+			b.getAuthors().remove(deletedAuthor);
+			if(b.getAuthors().size()==0)
+				bDao.delete(b);
+			else
+				bDao.save(b);
+		});
+		aDao.deleteById(authorId);
+		bDao.flush();
+		aDao.flush();
+		return deletedAuthor;
 	}
 	
 	public Author findAuthorById(int authorId) throws NoSuchElementException{
