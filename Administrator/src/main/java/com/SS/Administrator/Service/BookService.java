@@ -17,7 +17,6 @@ import com.SS.Administrator.Entity.Genre;
 import com.SS.Administrator.Entity.Publisher;
 
 @Component
-@Transactional
 public class BookService {
 
 	@Autowired
@@ -32,18 +31,18 @@ public class BookService {
 	public List<Book> readAllBooks(){
 		return bDao.findAll();
 	}
+	@Transactional
 	public void updateBook(Book book)throws NoSuchElementException{
 		if(!bDao.existsById(book.getBookId()))
 			throw new NoSuchElementException();
 		Book returned = bDao.save(book);
-		bDao.flush();
 		book=returned;
 	}
+	@Transactional
 	public void addBook(Book book) throws IllegalArgumentException {
 		if(book.getPublisher()!=null&&book.getTitle()!=null&&book.getAuthors()!=null&&book.getGenres()!=null) {
 			if(book.getBookId()==null) {
 				Book returned = bDao.save(book);
-				bDao.flush();
 				book=returned;
 			}else {
 				throw new IllegalArgumentException();
@@ -51,10 +50,10 @@ public class BookService {
 		}else
 			throw new IllegalArgumentException();
 	}
+	@Transactional
 	public Book deleteBook(int bookId) throws NoSuchElementException{
 		Book deletedBook = bDao.findById(bookId).get();
 		bDao.deleteById(bookId);
-		bDao.flush();
 		return deletedBook;
 	}
 	public Book findBookById(int bookId) throws NoSuchElementException{
@@ -63,17 +62,18 @@ public class BookService {
 	public List<Author> findAuthorsByBook(int bookId) throws NoSuchElementException{
 		return bDao.findById(bookId).get().getAuthors();
 	}
+	@Transactional
 	public Author deleteAuthorFromBook(int bookId, int authorId)throws NoSuchElementException {
 		Book book = bDao.findById(bookId).get();
 		Author author = aDao.findById(authorId).get();
 		if(book.getAuthors().remove(author)) {
 			bDao.save(book);
-			bDao.flush();
 			return author;
 		}
 		else
 			throw new NoSuchElementException();
 	}
+	@Transactional
 	public Author addAuthorFromBook(int bookId, int authorId)throws NoSuchElementException {
 		Book book = bDao.findById(bookId).get();
 		Author author = aDao.findById(authorId).get();
@@ -83,10 +83,10 @@ public class BookService {
 		else {
 			book.getAuthors().add(author);
 			bDao.save(book);
-			bDao.flush();
 			return author;
 		}
 	}
+	@Transactional
 	public Author postAuthorFromBook(int bookId, int authorId)throws NoSuchElementException {
 		Book book = bDao.findById(bookId).get();
 		Author author = aDao.findById(authorId).get();
@@ -96,23 +96,23 @@ public class BookService {
 		else {
 			book.getAuthors().add(author);
 			bDao.save(book);
-			bDao.flush();
 			return author;
 		}
 	}
 	public List<Genre> findGenresByBook(int bookId) throws NoSuchElementException{
 		return bDao.findById(bookId).get().getGenres();
 	}
+	@Transactional
 	public Genre deleteGenreFromBook(int bookId, int genreId)throws NoSuchElementException{
 		Book book = bDao.findById(bookId).get();
 		Genre genre =gDao.findById(genreId).get();
 		if(book.getGenres().remove(genre)) {
 			bDao.save(book);
-			bDao.flush();
 			return genre;
 		}else
 			throw new NoSuchElementException();
 	}
+	@Transactional
 	public Genre addGenreToBook(int bookId, int genreId)throws NoSuchElementException{
 		Book book = bDao.findById(bookId).get();
 		Genre genre = gDao.findById(genreId).get();
@@ -121,10 +121,10 @@ public class BookService {
 		else {
 			book.getGenres().add(genre);
 			bDao.save(book);
-			bDao.flush();
 			return genre;
 		}
 	}
+	@Transactional
 	public Genre postGenreToBook(int bookId, int genreId)throws NoSuchElementException{
 		Book book = bDao.findById(bookId).get();
 		Genre genre = gDao.findById(genreId).get();
@@ -133,13 +133,13 @@ public class BookService {
 		else {
 			book.getGenres().add(genre);
 			bDao.save(book);
-			bDao.flush();
 			return genre;
 		}
 	}
 	public Publisher findPublisherofBook(int bookId) throws NoSuchElementException{
 		return bDao.findById(bookId).get().getPublisher();
 	}
+	@Transactional
 	public Publisher updatePublisherOfBook(int bookId, int publisherId)throws NoSuchElementException{
 		Publisher publisher = pDao.findById(publisherId).get();
 		Book book = bDao.findById(bookId).get();
@@ -148,7 +148,6 @@ public class BookService {
 		else {
 			book.setPublisher(publisher);
 			bDao.save(book);
-			bDao.flush();
 			return publisher;
 		}
 	}

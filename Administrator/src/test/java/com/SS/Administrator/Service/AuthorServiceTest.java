@@ -41,7 +41,7 @@ class AuthorServiceTest {
 	void testUpdateFail() {
 		try {
 			Author author = new Author();
-			author.setAuthorId(21);
+			author.setAuthorId(-1);
 			service.updateAuthor(author);
 			fail();
 		}catch(NoSuchElementException e) {}

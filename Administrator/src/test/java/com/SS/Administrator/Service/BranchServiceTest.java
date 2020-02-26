@@ -62,7 +62,7 @@ class BranchServiceTest {
 			fail();
 		}catch(NoSuchElementException e) {}
 		try {
-			service.findBranchById(2);
+			service.findBranchById(-10);
 			fail();
 		}catch(NoSuchElementException e) {}
 	}

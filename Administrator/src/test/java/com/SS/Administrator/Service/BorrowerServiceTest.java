@@ -94,7 +94,7 @@ class BorrowerServiceTest {
 			fail();
 			}catch(NoSuchElementException e) {}
 		try {
-			service.findBorrowerById(5);
+			service.findBorrowerById(-1);
 			fail();
 		}catch(NoSuchElementException e) {}
 	}

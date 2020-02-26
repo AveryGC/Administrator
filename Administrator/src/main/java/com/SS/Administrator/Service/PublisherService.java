@@ -31,12 +31,11 @@ public class PublisherService {
 		return pDao.findAll();
 	}
 	
-	
+	@Transactional
 	public void addPublisher(Publisher publisher) throws IllegalArgumentException{
 		if(publisher.getPublisherName()!=null) {
 			if(publisher.getPublisherId()==null){
 				Publisher returned = pDao.save(publisher);
-				pDao.flush();
 				publisher = returned;
 			}
 			else
@@ -45,23 +44,20 @@ public class PublisherService {
 			throw new IllegalArgumentException();
 		}
 	}
-	
+	@Transactional
 	public void updatePublisher(Publisher publisher) throws IllegalArgumentException {
 		if(!pDao.existsById(publisher.getPublisherId()))
 			throw new NoSuchElementException();
 		Publisher returned = pDao.save(publisher);
-		pDao.flush();
 		publisher = returned;
 	}
-	
+	@Transactional
 	public Publisher deletePublisher(int publisherId) throws NoSuchElementException {
 		Publisher deletedPublisher = pDao.findById(publisherId).get();
 		deletedPublisher.getBooks().forEach(b->{
 			bDao.delete(b);
 		});
 		pDao.deleteById(publisherId);
-		bDao.flush();
-		pDao.flush();
 		return deletedPublisher;
 	}
 	

@@ -19,31 +19,28 @@ public class BranchService {
 	public List<Branch> readAllBranchs(){
 		return bDao.findAll();
 	}
-	
+	@Transactional
 	public void addBranch(Branch branch) throws IllegalArgumentException{
 		if(branch.getBranchAddress()!=null&&branch.getBranchName()!=null) {
 			if(branch.getBranchId()==null) {
 				Branch returned =bDao.save(branch);
-				bDao.flush();
 				branch = returned;
 			}else
 				throw new IllegalArgumentException();
 		}else
 			throw new IllegalArgumentException();
 	}
-	
+	@Transactional
 	public void updateBranch(Branch branch)throws NoSuchElementException{
 		if(!bDao.existsById(branch.getBranchId()))
 			throw new NoSuchElementException();
 		Branch returned= bDao.save(branch);
-		bDao.flush();
 		branch= returned;
 	}
-	
+	@Transactional
 	public Branch deleteBranch(int branchId)throws NoSuchElementException{
 		Branch deleteBranch = bDao.findById(branchId).get();
 		bDao.deleteById(branchId);
-		bDao.flush();
 		return deleteBranch;
 	}
 	

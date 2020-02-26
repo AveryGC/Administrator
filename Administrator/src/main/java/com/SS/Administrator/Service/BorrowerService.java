@@ -11,7 +11,6 @@ import com.SS.Administrator.DAO.BorrowerDAO;
 import com.SS.Administrator.Entity.Borrower;
 
 @Component
-@Transactional
 public class BorrowerService {
 	@Autowired
 	private BorrowerDAO bDao;
@@ -19,31 +18,28 @@ public class BorrowerService {
 	public List<Borrower> readAllBorrowers(){
 		return bDao.findAll();
 	}
-	
+	@Transactional
 	public void addBorrower(Borrower borrower)throws IllegalArgumentException{
 		if(borrower.getAddress()!=null&&borrower.getName()!=null&&borrower.getPhone()!=null) {
 			if(borrower.getCardNo()==null) {
 				Borrower returned = bDao.save(borrower);
-				bDao.flush();
 				borrower = returned;
 			}else
 				throw new IllegalArgumentException();
 		}else
 			throw new IllegalArgumentException();
 	}
-	
+	@Transactional
 	public void updateBorrower(Borrower borrower) throws NoSuchElementException{
 		if(!bDao.existsById(borrower.getCardNo()))
 			throw new NoSuchElementException();
 		Borrower returned = bDao.save(borrower);
-		bDao.flush();
 		borrower = returned;
 	}
-	
+	@Transactional
 	public Borrower deleteBorrower(int borrowerId)throws NoSuchElementException{
 		Borrower deleBorrower = bDao.findById(borrowerId).get();
 		bDao.deleteById(borrowerId);
-		bDao.flush();
 		return deleBorrower;
 	}
 	

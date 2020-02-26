@@ -30,12 +30,11 @@ public class GenreService {
 	public List<Genre> readAllGenres(){
 		return gDao.findAll();
 	}
-	
+	@Transactional
 	public void addGenre(Genre genre) throws IllegalArgumentException {
 		if(genre.getGenreName()!=null) {
 			if(genre.getGenre_Id()==null){
 				Genre returned = gDao.save(genre);
-				gDao.flush();
 				genre= returned;
 			}
 			else 
@@ -44,15 +43,14 @@ public class GenreService {
 			throw new IllegalArgumentException();
 		}
 	}
-	
+	@Transactional
 	public void updateGenre(Genre genre) throws  NoSuchElementException{
 		if(!gDao.existsById(genre.getGenre_Id()))
 			throw new NoSuchElementException();
 		Genre returned = gDao.save(genre);
-		gDao.flush();
 		genre= returned;
 	}
-	
+	@Transactional
 	public Genre deleteGenre(int genreId)throws NoSuchElementException {
 		Genre deletedGenre = gDao.findById(genreId).get();
 		deletedGenre.getBooks().forEach(b->{
@@ -63,8 +61,6 @@ public class GenreService {
 				bDao.save(b);
 		});
 		gDao.deleteById(genreId);
-		bDao.flush();
-		gDao.flush();
 		return deletedGenre;
 	}
 	public Genre findGenreById(int genreId)throws NoSuchElementException{
@@ -77,16 +73,17 @@ public class GenreService {
 	public List<Genre> findGenresByBook(int bookId) throws NoSuchElementException{
 		return bDao.findById(bookId).get().getGenres();
 	}
+	@Transactional
 	public Book deleteGenreFromBook(int bookId, int genreId)throws NoSuchElementException{
 		Book book = bDao.findById(bookId).get();
 		Genre genre =gDao.findById(genreId).get();
 		if(book.getGenres().remove(genre)) {
 			bDao.save(book);
-			bDao.flush();
 			return book;
 		}else
 			throw new NoSuchElementException();
 	}
+	@Transactional
 	public Book addGenreToBook(int bookId, int genreId)throws NoSuchElementException{
 		Book book = bDao.findById(bookId).get();
 		Genre genre = gDao.findById(genreId).get();
@@ -95,10 +92,10 @@ public class GenreService {
 		else {
 			book.getGenres().add(genre);
 			bDao.save(book);
-			bDao.flush();
 			return book;
 		}
 	}
+	@Transactional
 	public Book postGenreToBook(int bookId, int genreId)throws NoSuchElementException{
 		Book book = bDao.findById(bookId).get();
 		Genre genre = gDao.findById(genreId).get();
@@ -107,7 +104,6 @@ public class GenreService {
 		else {
 			book.getGenres().add(genre);
 			bDao.save(book);
-			bDao.flush();
 			return book;
 		}
 	}
