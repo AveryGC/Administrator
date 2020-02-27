@@ -26,14 +26,11 @@ public class AuthorService {
 	
 	@Transactional
 	public void addAuthor(Author author) throws IllegalArgumentException{
-		if(author.getAuthorName()!=null) {
-			if(author.getAuthorId()==null){
-				Author returned =aDao.save(author);
-				author = returned;
-				}
-			else 
-				throw new IllegalArgumentException();
-		}else
+		if(author.getAuthorId()==null){
+			Author returned =aDao.save(author);
+			author = returned;
+			}
+		else 
 			throw new IllegalArgumentException();
 	}
 	

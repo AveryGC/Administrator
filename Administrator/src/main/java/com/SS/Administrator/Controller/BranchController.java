@@ -5,8 +5,8 @@ package com.SS.Administrator.Controller;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,7 @@ public class BranchController {
 		return new ResponseEntity<List<Branch>>(branches,HttpStatus.OK);
 	}
 	@RequestMapping(method = RequestMethod.POST,produces ={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Branch>addBranch(@RequestBody Branch branch){
+	public ResponseEntity<Branch>addBranch(@RequestBody@Valid Branch branch){
 		try {
 			branchService.addBranch(branch);
 			return new ResponseEntity<Branch>(branch,HttpStatus.CREATED);
@@ -48,7 +48,7 @@ public class BranchController {
 	
 	@RequestMapping(path="/{branchId}", method = RequestMethod.PUT,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Branch>updateBranch(@RequestBody@NotEmpty Branch branch,@NotBlank @PathVariable int branchId){
+	public ResponseEntity<Branch>updateBranch(@RequestBody@Valid Branch branch,@NotNull @PathVariable int branchId){
 		if(branchId!=branch.getBranchId())
 			return new ResponseEntity<Branch>(HttpStatus.BAD_REQUEST);
 		branchService.updateBranch(branch);
@@ -57,14 +57,14 @@ public class BranchController {
 	
 	@RequestMapping(path="/{branchId}", method = RequestMethod.GET,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Branch> findById(@PathVariable @NotBlank int branchId){
+	public ResponseEntity<Branch> findById(@PathVariable @NotNull int branchId){
 		Branch branch = branchService.findBranchById(branchId);
 		return new ResponseEntity<Branch>(branch,HttpStatus.OK);
 	}
 	
 	@RequestMapping(path="/{branchId}", method = RequestMethod.DELETE,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Branch> deleteBranch(@PathVariable @NotBlank int branchId){
+	public ResponseEntity<Branch> deleteBranch(@PathVariable @NotNull int branchId){
 		branchService.deleteBranch(branchId);
 		return new ResponseEntity<Branch>(HttpStatus.OK);
 	}

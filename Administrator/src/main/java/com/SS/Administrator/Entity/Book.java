@@ -15,6 +15,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.annotation.AccessType;
@@ -34,9 +37,12 @@ public class Book implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 6338124170695094872L;
+	
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer bookId;
+	
+	@NotBlank
 	@Column(name = "title")
     private String title;
 	
@@ -44,7 +50,7 @@ public class Book implements Serializable {
 	@JoinTable(name = "tbl_book_authors",
 	inverseJoinColumns = @JoinColumn(name = "authorId"),
 	joinColumns = @JoinColumn(name = "bookId"))
-//	@JsonManagedReference
+	@NotEmpty
 	private List<Author> authors;
 	
 	@ManyToMany(cascade = CascadeType.PERSIST)
@@ -52,15 +58,16 @@ public class Book implements Serializable {
 	@JoinTable(name = "tbl_book_genres",
 	joinColumns = @JoinColumn (name = "bookId"),
 	inverseJoinColumns =  @JoinColumn (name= "genre_id"))
-//	@JsonManagedReference
+	@NotEmpty
 	private List<Genre> genres;
 	
 	@ManyToOne(cascade = CascadeType.PERSIST)//(fetch = FetchType.EAGER)
 	@Lazy(value = false)
 	@JoinColumn(name = "pubId", referencedColumnName = "publisherId")
 	@JsonManagedReference
+	@NotNull
 	private Publisher publisher;
-//    private Publisher publisher;
+
 
     public Integer getBookId() {
         return bookId;

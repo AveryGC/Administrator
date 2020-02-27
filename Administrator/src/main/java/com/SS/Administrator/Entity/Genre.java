@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 import org.springframework.data.annotation.AccessType;
 import org.springframework.data.annotation.AccessType.Type;
@@ -37,11 +38,11 @@ public class Genre implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer genre_id;
 	
+	@NotEmpty
 	@Column(name = "genre_name")
     private String genreName;
 	
 	@ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
-//	@JsonBackReference
 	@JsonIgnore
 	List<Book> books;
  

@@ -11,7 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.data.annotation.AccessType.Type;
 
@@ -32,10 +35,19 @@ public class Borrower implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer cardNo;
+	
+	@NotBlank
+	@Length(min = 2)
 	@Column(name = "name")
 	private String name;
+	
+	@NotBlank
+	@Length(min = 10)
 	@Column(name = "address")
 	private String address;
+	
+	@NotEmpty
+	@Length(min = 10 ,max = 21)
 	@Column(name = "phone")
 	private String phone;
 	

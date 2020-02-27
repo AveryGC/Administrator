@@ -11,7 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.data.annotation.AccessType.Type;
 
@@ -36,10 +38,13 @@ public class Author implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer authorId;
+	
+	@NotBlank
+	@Length(min = 2)
 	@Column(name = "authorName")
     private String authorName;
+	
 	@ManyToMany(mappedBy = "authors",fetch = FetchType.LAZY)
-//	@JsonBackReference
 	@JsonIgnore
 	List<Book> books;
 

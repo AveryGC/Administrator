@@ -20,12 +20,9 @@ public class BorrowerService {
 	}
 	@Transactional
 	public void addBorrower(Borrower borrower)throws IllegalArgumentException{
-		if(borrower.getAddress()!=null&&borrower.getName()!=null&&borrower.getPhone()!=null) {
-			if(borrower.getCardNo()==null) {
-				Borrower returned = bDao.save(borrower);
-				borrower = returned;
-			}else
-				throw new IllegalArgumentException();
+		if(borrower.getCardNo()==null) {
+			Borrower returned = bDao.save(borrower);
+			borrower = returned;
 		}else
 			throw new IllegalArgumentException();
 	}

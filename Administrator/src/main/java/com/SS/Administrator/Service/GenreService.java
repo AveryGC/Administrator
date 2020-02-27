@@ -32,16 +32,12 @@ public class GenreService {
 	}
 	@Transactional
 	public void addGenre(Genre genre) throws IllegalArgumentException {
-		if(genre.getGenreName()!=null) {
-			if(genre.getGenre_Id()==null){
-				Genre returned = gDao.save(genre);
-				genre= returned;
-			}
-			else 
-				throw new IllegalArgumentException();
-		}else {
-			throw new IllegalArgumentException();
+		if(genre.getGenre_Id()==null){
+			Genre returned = gDao.save(genre);
+			genre= returned;
 		}
+		else 
+			throw new IllegalArgumentException();
 	}
 	@Transactional
 	public void updateGenre(Genre genre) throws  NoSuchElementException{

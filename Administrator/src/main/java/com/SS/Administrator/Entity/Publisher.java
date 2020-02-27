@@ -10,7 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.data.annotation.AccessType.Type;
 
@@ -32,15 +34,19 @@ public class Publisher implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer publisherId;
+	
 	@Column(name = "publisherPhone")
     private String publisherPhone;
+	
+	@NotEmpty
+	@Length(min = 8)
 	@Column(name = "publisherName")
     private String publisherName;
+	
 	@Column(name = "publisherAddress")
     private String publisherAddress;
 	
 	@OneToMany(mappedBy = "publisher")
-//	@JsonBackReference
 	@JsonIgnore
 	private List<Book> books;
     

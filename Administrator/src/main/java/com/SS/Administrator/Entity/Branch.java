@@ -11,9 +11,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.data.annotation.AccessType.Type;
+
 
 /**
  * @author acorb
@@ -32,9 +35,13 @@ public class Branch implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer branchId;
 	
+	@NotEmpty
+	@Length(min = 8)
 	@Column(name = "branchName")
 	private String branchName;
 	
+	@NotEmpty
+	@Length(min = 10)
 	@Column(name = "branchAddress")
 	private String branchAddress;
 

@@ -25,12 +25,6 @@ class PublisherServiceTest {
 	void testAddFailure(){
 		try {
 			Publisher pub = new Publisher();
-			pub.setPublisherName(null);
-			service.addPublisher(pub);
-			fail();
-		}catch(IllegalArgumentException e) {}
-		try {
-			Publisher pub = new Publisher();
 			pub.setPublisherName("not null");
 			pub.setPublisherId(100);
 			service.addPublisher(pub);

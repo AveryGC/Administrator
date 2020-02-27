@@ -3,8 +3,10 @@ package com.SS.Administrator.Controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,14 +39,14 @@ public class AuthorController {
 	
 	@RequestMapping(path = "/{authorId}", method = RequestMethod.GET,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Author> getAuthor(@PathVariable@NotBlank int authorId){
+	public ResponseEntity<Author> getAuthor(@PathVariable@NotNull int authorId){
 		Author author = authorService.findAuthorById(authorId);
 		return new ResponseEntity<Author>(author,HttpStatus.OK);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, consumes ={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
 			produces ={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Author> addAuthor(@RequestBody Author author){
+	public ResponseEntity<Author> addAuthor(@RequestBody@Valid Author author){
 		try {
 			authorService.addAuthor(author);
 			return new ResponseEntity<Author>(author,HttpStatus.CREATED);
@@ -55,7 +57,7 @@ public class AuthorController {
 	@RequestMapping(path = "/{authorId}", method = RequestMethod.PUT, consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },produces ={
 					MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Author> updateAuthor(@RequestBody @NotEmpty Author author, @PathVariable@NotBlank int authorId){
+	public ResponseEntity<Author> updateAuthor(@RequestBody@Valid Author author, @PathVariable@NotNull int authorId){
 		if(author.getAuthorId()!= authorId)
 			return new ResponseEntity<Author>(HttpStatus.BAD_REQUEST);
 		authorService.updateAuthor(author);
@@ -64,26 +66,26 @@ public class AuthorController {
 	
 	@RequestMapping(path = "/{authorId}", method = RequestMethod.DELETE,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Author> deleteAuthor(@PathVariable@NotBlank int authorId){
+	public ResponseEntity<Author> deleteAuthor(@PathVariable@NotNull int authorId){
 		Author deletedAuthor = authorService.deleteAuthor(authorId);
 		return new ResponseEntity<Author>(deletedAuthor,HttpStatus.OK);
 	}
 	
 	@RequestMapping(path="/{authorId}/books", method = RequestMethod.GET,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<List<Book>>readBooksByAuthor(@PathVariable@NotBlank int authorId){
+	public ResponseEntity<List<Book>>readBooksByAuthor(@PathVariable@NotNull int authorId){
 		List <Book> books = authorService.readBooksByAuthor(authorId);
 		return new ResponseEntity<List<Book>>(books,HttpStatus.OK);
 	}
 	@RequestMapping(path="/{authorId}/books/{bookId}", method = {RequestMethod.PUT},produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Book>addToBookAuthor(@PathVariable@NotBlank int authorId, @PathVariable@NotBlank int bookId){
+	public ResponseEntity<Book>addToBookAuthor(@PathVariable@NotNull int authorId, @PathVariable@NotNull int bookId){
 		authorService.addAuthorFromBook(bookId, authorId);
 		return new ResponseEntity<Book>(HttpStatus.ACCEPTED);
 	}
 	@RequestMapping(path="/{authorId}/books/{bookId}", method = {RequestMethod.POST},produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Book>postToBookAuthor(@PathVariable@NotBlank int authorId, @PathVariable@NotBlank int bookId){
+	public ResponseEntity<Book>postToBookAuthor(@PathVariable@NotNull int authorId, @PathVariable@NotNull int bookId){
 		Book book = authorService.postAuthorFromBook(bookId, authorId);
 		if(book==null)
 			return new ResponseEntity<Book>(HttpStatus.CONFLICT);
@@ -92,7 +94,7 @@ public class AuthorController {
 	}
 	@RequestMapping(path="/{authorId}/books/{bookId}", method = {RequestMethod.DELETE},produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Book>deleteBookAuthor(@PathVariable@NotBlank int authorId, @PathVariable@NotBlank int bookId){
+	public ResponseEntity<Book>deleteBookAuthor(@PathVariable@NotNull int authorId, @PathVariable@NotNull int bookId){
 		Book book = authorService.deleteAuthorFromBook(bookId, authorId);
 		return new ResponseEntity<Book>(book, HttpStatus.OK);
 	}

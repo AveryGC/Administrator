@@ -33,16 +33,12 @@ public class PublisherService {
 	
 	@Transactional
 	public void addPublisher(Publisher publisher) throws IllegalArgumentException{
-		if(publisher.getPublisherName()!=null) {
-			if(publisher.getPublisherId()==null){
-				Publisher returned = pDao.save(publisher);
-				publisher = returned;
-			}
-			else
-				throw new IllegalArgumentException();
-		}else {
-			throw new IllegalArgumentException();
+		if(publisher.getPublisherId()==null){
+			Publisher returned = pDao.save(publisher);
+			publisher = returned;
 		}
+		else
+			throw new IllegalArgumentException();
 	}
 	@Transactional
 	public void updatePublisher(Publisher publisher) throws IllegalArgumentException {

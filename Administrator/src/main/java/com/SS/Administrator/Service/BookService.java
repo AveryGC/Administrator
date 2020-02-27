@@ -40,15 +40,12 @@ public class BookService {
 	}
 	@Transactional
 	public void addBook(Book book) throws IllegalArgumentException {
-		if(book.getPublisher()!=null&&book.getTitle()!=null&&book.getAuthors()!=null&&book.getGenres()!=null) {
-			if(book.getBookId()==null) {
-				Book returned = bDao.save(book);
-				book=returned;
-			}else {
-				throw new IllegalArgumentException();
-			}
-		}else
+		if(book.getBookId()==null) {
+			Book returned = bDao.save(book);
+			book=returned;
+		}else {
 			throw new IllegalArgumentException();
+		}
 	}
 	@Transactional
 	public Book deleteBook(int bookId) throws NoSuchElementException{

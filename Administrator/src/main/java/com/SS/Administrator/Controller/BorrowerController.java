@@ -2,8 +2,8 @@ package com.SS.Administrator.Controller;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +31,7 @@ public class BorrowerController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST,produces ={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Borrower>addBorrower(@RequestBody Borrower borrower){
+	public ResponseEntity<Borrower>addBorrower(@RequestBody@Valid Borrower borrower){
 		try {
 			borrowerService.addBorrower(borrower);
 			return new ResponseEntity<Borrower>(borrower,HttpStatus.CREATED);
@@ -41,7 +41,7 @@ public class BorrowerController {
 	}
 	@RequestMapping(path="/{borrowerId}", method = RequestMethod.PUT,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<String> updateBorrower(@PathVariable@NotBlank int borrowerId,@RequestBody@NotEmpty  Borrower borrower){
+	public ResponseEntity<String> updateBorrower(@PathVariable@NotNull int borrowerId,@RequestBody@Valid  Borrower borrower){
 		if(borrower.getCardNo()!=borrowerId)
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		borrowerService.updateBorrower(borrower);
@@ -50,14 +50,14 @@ public class BorrowerController {
 	
 	@RequestMapping(path="/{borrowerId}", method = RequestMethod.GET,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Borrower> findById(@PathVariable@NotBlank int borrowerId){
+	public ResponseEntity<Borrower> findById(@PathVariable@NotNull int borrowerId){
 		Borrower borrower= borrowerService.findBorrowerById(borrowerId);
 		return new ResponseEntity<Borrower>(borrower,HttpStatus.OK);
 	}
 	
 	@RequestMapping(path="/{borrowerId}", method = RequestMethod.DELETE,produces ={
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<Borrower> deleteBorrower(@PathVariable@NotBlank int borrowerId){
+	public ResponseEntity<Borrower> deleteBorrower(@PathVariable@NotNull int borrowerId){
 		borrowerService.deleteBorrower(borrowerId);
 		return new ResponseEntity<Borrower>(HttpStatus.OK);
 	}

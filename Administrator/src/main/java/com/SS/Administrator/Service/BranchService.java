@@ -21,12 +21,9 @@ public class BranchService {
 	}
 	@Transactional
 	public void addBranch(Branch branch) throws IllegalArgumentException{
-		if(branch.getBranchAddress()!=null&&branch.getBranchName()!=null) {
-			if(branch.getBranchId()==null) {
-				Branch returned =bDao.save(branch);
-				branch = returned;
-			}else
-				throw new IllegalArgumentException();
+		if(branch.getBranchId()==null) {
+			Branch returned =bDao.save(branch);
+			branch = returned;
 		}else
 			throw new IllegalArgumentException();
 	}
